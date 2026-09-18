@@ -13,7 +13,7 @@
   "host_permissions": [
     "<all_urls>",
     "file:///*",
-    "https://focustrack-api.onrender.com/api"
+    "https://focustrack-api.onrender.com/*"
   ],
   "background": {
     "service_worker": "background.js"

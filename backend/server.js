@@ -20,6 +20,9 @@ const allowedOrigins = [
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   if (allowedOrigins.includes(origin)) return true;
+  if (origin === 'null') return true;
+  if (origin.startsWith('chrome-extension://')) return true;
+  if (origin.startsWith('file://')) return true;
   return /https:\/\/.*\.vercel\.app$/i.test(origin);
 };
 
@@ -27,15 +30,7 @@ const app = express();
 
 app.use(cors({
   origin: (origin, callback) => {
-    const allowed = [
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'https://focus-track-xi.vercel.app',
-      'https://focus-track-griozcarv-jangid3.vercel.app',
-      'https://focustrack-api.onrender.com'
-    ];
-
-    if (!origin || allowed.includes(origin) || /https:\/\/.*\.vercel\.app$/i.test(origin)) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
       return;
     }
@@ -44,7 +39,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 app.use(express.json());
