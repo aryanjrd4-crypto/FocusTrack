@@ -1,3 +1,5 @@
+const API_BASE = 'https://focustrack-e58k.onrender.com/api';
+
 const loginSection = document.getElementById('loginSection');
 const statusSection = document.getElementById('statusSection');
 const errorEl = document.getElementById('error');
@@ -30,7 +32,7 @@ loginBtn.addEventListener('click', async () => {
   }
 
   try {
-    const res = await fetch('https://focustrack-e58k.onrender.com//api/auth/login', {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

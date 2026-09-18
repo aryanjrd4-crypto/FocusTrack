@@ -1,3 +1,5 @@
+const API_BASE = "https://focustrack-e58k.onrender.com/api";
+
 let currentTab = null;
 let startTime = null;
 let currentTitle = "";
@@ -162,7 +164,7 @@ async function syncToServer() {
   if (!token || storedSessions.length === 0) return;
 
   try {
-    const res = await fetch("http://localhost:5000/api/activity/track", {
+    const res = await fetch(`${API_BASE}/activity/track`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
