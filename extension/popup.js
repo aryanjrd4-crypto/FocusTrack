@@ -30,7 +30,7 @@ loginBtn.addEventListener('click', async () => {
   }
 
   try {
-    const res = await fetch('http://localhost:5000/api/auth/login', {
+    const res = await fetch('https://focustrack-e58k.onrender.com//api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
