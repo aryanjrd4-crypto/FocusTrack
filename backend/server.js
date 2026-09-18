@@ -14,7 +14,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://focus-track-xi.vercel.app',
   'https://focus-track-griozcarv-jangid3.vercel.app',
-  'https://focustrack-api.onrender.com'
+  'https://focustrack-4psp.onrender.com'
 ];
 
 const isAllowedOrigin = (origin) => {
