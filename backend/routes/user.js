@@ -1,7 +1,19 @@
 import express from 'express';
+import multer from 'multer';
+import cloudinary from 'cloudinary';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
+
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 router.get('/me', protect, async (req, res) => {
   res.json({
@@ -23,6 +35,44 @@ router.get('/me', protect, async (req, res) => {
     totalStudySeconds: req.user.totalStudySeconds || 0,
     totalEntertainmentSeconds: req.user.totalEntertainmentSeconds || 0
   });
+});
+
+router.post('/avatar', protect, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No avatar file uploaded' });
+    }
+
+    let avatarUrl = '';
+
+    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: 'focustrack/avatars',
+            transformation: [{ width: 512, height: 512, crop: 'fill', quality: 'auto' }]
+          },
+          (error, uploaded) => {
+            if (error) return reject(error);
+            resolve(uploaded);
+          }
+        );
+
+        stream.end(req.file.buffer);
+      });
+
+      avatarUrl = result.secure_url;
+    } else {
+      avatarUrl = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+    }
+
+    req.user.avatar = avatarUrl;
+    await req.user.save();
+
+    res.json({ message: 'Avatar uploaded', avatar: avatarUrl });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Avatar upload failed' });
+  }
 });
 
 router.patch('/me', protect, async (req, res) => {

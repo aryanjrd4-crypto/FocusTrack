@@ -58,9 +58,17 @@ export default function Sidebar({ user, onLogout }) {
 
       <div className="border-t border-white/10 p-4">
         <div className="mb-3 flex items-center gap-3 rounded-xl bg-white/5 p-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 text-sm font-bold text-slate-950">
-            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-          </div>
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={user.name || 'User avatar'}
+              className="h-9 w-9 rounded-full object-cover ring-2 ring-indigo-500/40"
+            />
+          ) : (
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 text-sm font-bold text-slate-950">
+              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+            </div>
+          )}
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-white">{user?.name || 'User'}</p>
             <p className="text-xs text-slate-400">{user?.points || 0} pts</p>

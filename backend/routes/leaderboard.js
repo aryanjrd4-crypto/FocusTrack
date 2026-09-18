@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', protect, async (req, res) => {
   try {
     const users = await User.find()
-      .select('name points streak badges totalStudySeconds')
+      .select('name points streak badges totalStudySeconds avatar')
       .sort({ points: -1 })
       .limit(50);
 

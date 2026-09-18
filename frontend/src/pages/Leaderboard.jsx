@@ -94,23 +94,37 @@ export default function Leaderboard() {
                       {getRankIcon(index)}
                     </div>
 
-                    <div>
-                      <p className={`font-semibold ${isCurrentUser ? 'text-indigo-300' : ''}`}>
-                        {user.name}
-                        {isCurrentUser && (
-                          <span className="ml-2 text-xs bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded-full">
-                            You
+                    <div className="flex items-center gap-3">
+                      {user.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt={user.name || 'User avatar'}
+                          className="h-10 w-10 rounded-full object-cover ring-2 ring-indigo-500/30"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 text-xs font-semibold text-white">
+                          {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                        </div>
+                      )}
+
+                      <div>
+                        <p className={`font-semibold ${isCurrentUser ? 'text-indigo-300' : ''}`}>
+                          {user.name}
+                          {isCurrentUser && (
+                            <span className="ml-2 text-xs bg-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded-full">
+                              You
+                            </span>
+                          )}
+                        </p>
+                        <div className="flex items-center gap-3 text-sm text-slate-400 mt-0.5">
+                          <span className="flex items-center gap-1">
+                            <Flame size={14} className="text-orange-400" />
+                            {user.streak || 0} day streak
                           </span>
-                        )}
-                      </p>
-                      <div className="flex items-center gap-3 text-sm text-slate-400 mt-0.5">
-                        <span className="flex items-center gap-1">
-                          <Flame size={14} className="text-orange-400" />
-                          {user.streak || 0} day streak
-                        </span>
-                        {user.badges?.length > 0 && (
-                          <span>{user.badges.length} badges</span>
-                        )}
+                          {user.badges?.length > 0 && (
+                            <span>{user.badges.length} badges</span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

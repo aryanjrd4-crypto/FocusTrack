@@ -25,12 +25,20 @@ export default function Profile() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const avatarData = String(reader.result || '');
-      setUser((prev) => ({ ...prev, avatar: avatarData }));
-    };
-    reader.readAsDataURL(file);
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      const res = await API.post('/user/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      if (res.data?.avatar) {
+        setUser((prev) => ({ ...prev, avatar: res.data.avatar }));
+      }
+    } catch (err) {
+      console.error('Avatar upload failed', err);
+    }
   };
 
   const handleSave = async () => {
