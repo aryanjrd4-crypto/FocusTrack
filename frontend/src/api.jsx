@@ -1,10 +1,12 @@
 import axios from 'axios';
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || 'https://focustrack-e58k.onrender.com/api';
+
 const API = axios.create({
-  baseURL: 'https://focustrack-e58k.onrender.com/api', // baad mein live URL daal dena
+  baseURL: API_BASE_URL,
 });
 
-// Har request ke saath token bhejne ke liye
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
