@@ -7,6 +7,18 @@ const router = express.Router();
 
 const createToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
+router.get('/login', (req, res) => {
+  res.status(200).json({
+    message: 'Use POST /api/auth/login with email and password to login.'
+  });
+});
+
+router.get('/register', (req, res) => {
+  res.status(200).json({
+    message: 'Use POST /api/auth/register with name, email and password to register.'
+  });
+});
+
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
