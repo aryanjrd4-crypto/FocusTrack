@@ -13,17 +13,24 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://focus-track-xi.vercel.app',
+  'https://focus-track-griozcarv-jangid3.vercel.app',
   'https://focustrack-e58k.onrender.com'
 ];
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  return /https:\/\/.*\.vercel\.app$/i.test(origin);
+};
 
 const app = express();
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
       return;
     }
-    callback(new Error('Not allowed by CORS'));
+    callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
