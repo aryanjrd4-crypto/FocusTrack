@@ -24,20 +24,17 @@ const isAllowedOrigin = (origin) => {
 };
 
 const app = express();
+const app = express();
+
 app.use(cors({
-  origin: (origin, callback) => {
-    if (isAllowedOrigin(origin)) {
-      callback(null, true);
-      return;
-    }
-    callback(null, false);
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.options('*', cors());
+
 app.use(express.json());
+app.options('*', cors());
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/activity', activityRoutes);
