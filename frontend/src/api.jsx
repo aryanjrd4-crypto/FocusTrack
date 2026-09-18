@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // baad mein live URL daal dena
+  baseURL: 'https://focustrack-e58k.onrender.com/api', // baad mein live URL daal dena
 });
 
 // Har request ke saath token bhejne ke liye
