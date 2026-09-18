@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema({
   lastActiveDate: { type: String, default: '' },
   badges: { type: [String], default: [] },
   avatar: { type: String, default: '' },
+  emailNotifications: { type: Boolean, default: true },
+  weeklyReport: { type: Boolean, default: true },
   theme: { type: String, enum: ['dark', 'light'], default: 'dark' },
   notifications: {
     email: { type: Boolean, default: true },
