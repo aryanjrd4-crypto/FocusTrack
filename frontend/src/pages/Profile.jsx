@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import API from '../api';
-import { UserCircle2, Save, Bell, Download, Trash2 } from 'lucide-react';
+import { Save, Bell, Download, Trash2 } from 'lucide-react';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -20,6 +20,18 @@ export default function Profile() {
 
     loadProfile();
   }, []);
+
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const avatarData = String(reader.result || '');
+      setUser((prev) => ({ ...prev, avatar: avatarData }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleSave = async () => {
     try {
@@ -43,13 +55,29 @@ export default function Profile() {
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <div className="rounded-2xl border border-white/10 bg-[#111827] p-6">
           <div className="flex items-center justify-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 text-2xl font-semibold text-white">
-              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-            </div>
+            {user?.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name || 'User avatar'}
+                className="h-24 w-24 rounded-full object-cover ring-2 ring-indigo-500/40"
+              />
+            ) : (
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 text-2xl font-semibold text-white">
+                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
           </div>
+
           <div className="mt-5 text-center">
             <h2 className="text-2xl font-semibold text-white">{user?.name || 'User'}</h2>
             <p className="text-slate-400">{user?.email || 'No email'}</p>
+          </div>
+
+          <div className="mt-5">
+            <label className="block cursor-pointer rounded-xl border border-dashed border-indigo-500/40 bg-indigo-500/5 px-4 py-3 text-center text-sm font-medium text-indigo-200 transition hover:bg-indigo-500/10">
+              Upload profile photo
+              <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+            </label>
           </div>
         </div>
 
