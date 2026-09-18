@@ -1,4 +1,4 @@
-const API_BASE = "https://focustrack-e58k.onrender.com/api";
+const API_BASE = "https://focustrack-api.onrender.com/api";
 
 let currentTab = null;
 let startTime = null;

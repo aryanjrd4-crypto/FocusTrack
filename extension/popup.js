@@ -1,4 +1,4 @@
-const API_BASE = 'https://focustrack-e58k.onrender.com/api';
+const API_BASE = 'https://focustrack-api.onrender.com/api';
 
 const loginSection = document.getElementById('loginSection');
 const statusSection = document.getElementById('statusSection');

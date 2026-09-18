@@ -14,7 +14,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://focus-track-xi.vercel.app',
   'https://focus-track-griozcarv-jangid3.vercel.app',
-  'https://focustrack-e58k.onrender.com'
+  'https://focustrack-api.onrender.com'
 ];
 
 const isAllowedOrigin = (origin) => {
@@ -32,7 +32,7 @@ app.use(cors({
       'http://localhost:3000',
       'https://focus-track-xi.vercel.app',
       'https://focus-track-griozcarv-jangid3.vercel.app',
-      'https://focustrack-e58k.onrender.com'
+      'https://focustrack-api.onrender.com'
     ];
 
     if (!origin || allowed.includes(origin) || /https:\/\/.*\.vercel\.app$/i.test(origin)) {
