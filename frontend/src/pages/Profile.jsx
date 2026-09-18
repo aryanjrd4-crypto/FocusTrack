@@ -75,7 +75,8 @@ export default function Profile() {
     const previousValue = user[key];
     const preferences = {
       emailNotifications: key === 'emailNotifications' ? value : user.emailNotifications,
-      weeklyReport: key === 'weeklyReport' ? value : user.weeklyReport
+      weeklyReport: key === 'weeklyReport' ? value : user.weeklyReport,
+      goalReminders: key === 'goalReminders' ? value : user.goalReminders
     };
     setUser((prev) => ({ ...prev, [key]: value }));
     setSavingPreference(key);
@@ -188,6 +189,7 @@ export default function Profile() {
           <div className="space-y-3 text-sm text-slate-200">
             <ToggleRow label="Email updates" enabled={user?.emailNotifications ?? user?.notifications?.email ?? true} loading={savingPreference === 'emailNotifications'} onChange={(value) => handlePreferenceChange('emailNotifications', value)} />
             <ToggleRow label="Weekly report" enabled={user?.weeklyReport ?? user?.notifications?.weeklyReport ?? true} loading={savingPreference === 'weeklyReport'} onChange={(value) => handlePreferenceChange('weeklyReport', value)} />
+            <ToggleRow label="Goal reminders" enabled={user?.goalReminders ?? user?.notifications?.goalReminders ?? true} loading={savingPreference === 'goalReminders'} onChange={(value) => handlePreferenceChange('goalReminders', value)} />
           </div>
         </div>
         <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6">

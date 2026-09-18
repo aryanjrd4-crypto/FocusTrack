@@ -12,7 +12,8 @@ const upload = multer({
 
 const getNotificationPreferences = (user) => ({
   emailNotifications: user.emailNotifications ?? user.notifications?.email ?? true,
-  weeklyReport: user.weeklyReport ?? user.notifications?.weeklyReport ?? true
+  weeklyReport: user.weeklyReport ?? user.notifications?.weeklyReport ?? true,
+  goalReminders: user.goalReminders ?? user.notifications?.goalReminders ?? true
 });
 
 const serializeUser = (user) => ({
@@ -22,10 +23,11 @@ const serializeUser = (user) => ({
   avatar: user.avatar || '',
   emailNotifications: getNotificationPreferences(user).emailNotifications,
   weeklyReport: getNotificationPreferences(user).weeklyReport,
+  goalReminders: getNotificationPreferences(user).goalReminders,
   notifications: user.notifications || {
     email: getNotificationPreferences(user).emailNotifications,
     weeklyReport: getNotificationPreferences(user).weeklyReport,
-    goalReminders: true
+    goalReminders: getNotificationPreferences(user).goalReminders
   },
   points: user.points,
   streak: user.streak,
@@ -67,22 +69,24 @@ router.put('/profile', protect, async (req, res) => {
 
 router.put('/notifications', protect, async (req, res) => {
   try {
-    const { emailNotifications, weeklyReport } = req.body || {};
+    const { emailNotifications, weeklyReport, goalReminders } = req.body || {};
 
-    if (typeof emailNotifications !== 'boolean' || typeof weeklyReport !== 'boolean') {
+    if (typeof emailNotifications !== 'boolean' || typeof weeklyReport !== 'boolean' || typeof goalReminders !== 'boolean') {
       return res.status(400).json({ message: 'Notification preferences must be boolean values' });
     }
 
     req.user.emailNotifications = emailNotifications;
     req.user.weeklyReport = weeklyReport;
+    req.user.goalReminders = goalReminders;
     req.user.notifications = {
       ...req.user.notifications,
       email: emailNotifications,
-      weeklyReport
+      weeklyReport,
+      goalReminders
     };
     await req.user.save();
 
-    res.json({ message: 'Notification preferences updated', emailNotifications, weeklyReport });
+    res.json({ message: 'Notification preferences updated', emailNotifications, weeklyReport, goalReminders });
   } catch (err) {
     res.status(500).json({ message: 'Unable to update notification preferences' });
   }
@@ -168,6 +172,7 @@ router.patch('/me', protect, async (req, res) => {
       };
       if (typeof notifications.email === 'boolean') user.emailNotifications = notifications.email;
       if (typeof notifications.weeklyReport === 'boolean') user.weeklyReport = notifications.weeklyReport;
+      if (typeof notifications.goalReminders === 'boolean') user.goalReminders = notifications.goalReminders;
     }
 
     await user.save();
