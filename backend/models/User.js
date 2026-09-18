@@ -11,7 +11,14 @@ const userSchema = new mongoose.Schema({
   totalOtherSeconds: { type: Number, default: 0 },
   streak: { type: Number, default: 0 },
   lastActiveDate: { type: String, default: '' },
-  badges: { type: [String], default: [] }
+  badges: { type: [String], default: [] },
+  avatar: { type: String, default: '' },
+  theme: { type: String, enum: ['dark', 'light'], default: 'dark' },
+  notifications: {
+    email: { type: Boolean, default: true },
+    weeklyReport: { type: Boolean, default: true },
+    goalReminders: { type: Boolean, default: true }
+  }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

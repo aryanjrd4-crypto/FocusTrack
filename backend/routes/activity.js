@@ -147,4 +147,86 @@ router.get('/summary', protect, async (req, res) => {
   }
 });
 
+router.get('/analytics', protect, async (req, res) => {
+  try {
+    const days = Math.min(Math.max(Number(req.query.days) || 30, 7), 365);
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - (days - 1));
+    const startStr = startDate.toISOString().split('T')[0];
+
+    const activities = await Activity.find({
+      userId: req.user._id,
+      date: { $gte: startStr }
+    }).lean();
+
+    const heatmap = [];
+    const hourly = Array.from({ length: 24 }, (_, hour) => ({ hour, seconds: 0 }));
+    const domainMap = {};
+    const ratioData = [];
+
+    for (let i = 0; i < days; i += 1) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      const dateStr = date.toISOString().split('T')[0];
+      heatmap.push({ date: dateStr, totalSeconds: 0 });
+    }
+
+    activities.forEach((activity) => {
+      const heatIndex = heatmap.findIndex(item => item.date === activity.date);
+      if (heatIndex >= 0) {
+        heatmap[heatIndex].totalSeconds += activity.seconds;
+      }
+
+      const hour = new Date(activity.createdAt).getHours();
+      if (hourly[hour]) {
+        hourly[hour].seconds += activity.seconds;
+      }
+
+      const domain = activity.domain || 'unknown';
+      domainMap[domain] = (domainMap[domain] || 0) + activity.seconds;
+    });
+
+    for (let i = 0; i < heatmap.length; i += 1) {
+      const item = heatmap[i];
+      const date = new Date(item.date);
+      const label = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      ratioData.push({
+        date: label,
+        study: activities.filter(activity => activity.date === item.date && activity.category === 'study').reduce((total, activity) => total + activity.seconds, 0),
+        entertainment: activities.filter(activity => activity.date === item.date && activity.category === 'entertainment').reduce((total, activity) => total + activity.seconds, 0)
+      });
+    }
+
+    const topDomains = Object.entries(domainMap)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 8)
+      .map(([domain, seconds]) => ({ domain, seconds }));
+
+    const weekly = [];
+    const totalsByWeek = {};
+    activities.forEach((activity) => {
+      const d = new Date(activity.date);
+      const weekStart = new Date(d);
+      weekStart.setDate(d.getDate() - d.getDay());
+      const key = weekStart.toISOString().split('T')[0];
+      totalsByWeek[key] = (totalsByWeek[key] || 0) + activity.seconds;
+    });
+
+    Object.entries(totalsByWeek).forEach(([week, seconds]) => {
+      weekly.push({ week, minutes: Math.round(seconds / 60) });
+    });
+
+    res.json({
+      heatmap,
+      hourly,
+      topDomains,
+      ratioData,
+      weekly: weekly.slice(-8),
+      totalSessions: activities.length
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;

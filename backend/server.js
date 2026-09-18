@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.js';
 import activityRoutes from './routes/activity.js';
 import userRoutes from './routes/user.js';
 import leaderboardRoutes from './routes/leaderboard.js';
+import goalsRoutes from './routes/goals.js';
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/goals', goalsRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'FocusTrack Backend is running' });
